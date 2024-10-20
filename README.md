@@ -17,6 +17,13 @@ This project provides a Python tool to simulate electric fields and potentials g
 - NumPy
 - Matplotlib
 
+## Installation
+Before using this project, make sure you have Python installed on your system. Install the required dependencies using pip:
+```
+pip install numpy matplotlib
+```
+
+
 ## Theory
 #### Electric Field: 
 The electric field E around a charge is a vector field that represents the force per unit charge exerted on a positive test charge placed in the field. It is defined as:
