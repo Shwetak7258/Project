@@ -52,37 +52,57 @@ The main components of the simulation are:
                                    E=−∇V
 
 The simulation computes the potential and electric field at each point in a 2D grid for one or more point charges.
-### 2. Example of Single Charge Simulation
+### 2. Example 
+here is a basic usage example
 ```Python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Define constants
-k = 8.99e9  # Coulomb's constant (N·m²/C²)
+# Define charge distribution
+charges = [
+    {"q": 1e-9, "position": np.array([2, 3])},  # Positive charge
+    {"q": -1e-9, "position": np.array([-2, -3])},  # Negative charge
+]
 
-# Define the grid
-x = np.linspace(-10, 10, 100)
-y = np.linspace(-10, 10, 100)
+# Create a 2D grid for plotting
+x = np.linspace(-5, 5, 100)
+y = np.linspace(-5, 5, 100)
 X, Y = np.meshgrid(x, y)
 
-# Define the charge and its position
-charge = 1e-9  # in Coulombs
-charge_pos = (0, 0)
+# Function to calculate the potential and electric field
+def electric_field_and_potential(charges, X, Y):
+    Ex, Ey = np.zeros(X.shape), np.zeros(Y.shape)
+    V = np.zeros(X.shape)
 
-# Calculate the distance from the charge
-R = np.sqrt((X - charge_pos[0])**2 + (Y - charge_pos[1])**2)
+    for charge in charges:
+        q = charge["q"]
+        pos = charge["position"]
 
-# Calculate the potential
-V = k * charge / R
+        # Distance from charge to each point in the grid
+        R = np.sqrt((X - pos[0]) ** 2 + (Y - pos[1]) ** 2)
+        Ex += q * (X - pos[0]) / R ** 3
+        Ey += q * (Y - pos[1]) / R ** 3
+        V += q / R
 
-# Plot the potential as a heatmap
-plt.figure(figsize=(6, 6))
-plt.contourf(X, Y, V, levels=50, cmap='plasma')
-plt.colorbar(label='Electric Potential (V)')
-plt.title('Electric Potential from a Single Charge')
-plt.xlabel('x (m)')
-plt.ylabel('y (m)')
+    return Ex, Ey, V
+
+# Compute the electric field and potential
+Ex, Ey, V = electric_field_and_potential(charges, X, Y)
+
+# Plot electric field lines
+plt.streamplot(X, Y, Ex, Ey, color=np.sqrt(Ex**2 + Ey**2), cmap='inferno', linewidth=1)
+plt.colorbar(label='Electric Field Magnitude')
+
+# Plot potential contours
+plt.contour(X, Y, V, levels=50, cmap='coolwarm')
+plt.colorbar(label='Potential')
+
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.title('Electric Field and Potential')
+
 plt.show()
+
 ```
 
 ### 3.Visualizing the Electric Field
